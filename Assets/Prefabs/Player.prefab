@@ -30188,9 +30188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058f74a35ff85544aba025abfeb2bf72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flyPosition: 0.001
-  flyPositionSpeed: 1
-  moveSpeed: 10
+  moveSpeed: 35
 --- !u!1 &6223062438848387572
 GameObject:
   m_ObjectHideFlags: 0

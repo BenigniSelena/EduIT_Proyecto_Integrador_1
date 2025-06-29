@@ -1289,7 +1289,6 @@ GameObject:
   - component: {fileID: 4725498024520684641}
   - component: {fileID: 8519558150776593348}
   - component: {fileID: 5899570058732138254}
-  - component: {fileID: 1221426309347204029}
   m_Layer: 0
   m_Name: Enemy - Ship
   m_TagString: Untagged
@@ -1364,20 +1363,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1221426309347204029
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5395180164041527003}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f0fc4570a0b13340bf24eb527b09247, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  flyPosition: 0.5
-  flyPositionSpeed: 1
 --- !u!1001 &1221426309720960903
 PrefabInstance:
   m_ObjectHideFlags: 0

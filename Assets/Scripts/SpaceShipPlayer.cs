@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class SpaceShipPlayer : MonoBehaviour
 {
-    [SerializeField] private float flyPosition = 0.5f;
-    [SerializeField] private float flyPositionSpeed = 1f;
-
-    [SerializeField] private float moveSpeed = 10f;
+    [SerializeField] private float moveSpeed = 35f;
 
     private Vector3 startPosition;
 
@@ -18,8 +15,11 @@ public class SpaceShipPlayer : MonoBehaviour
 
     private void Update()
     {
-        float flyMovement = Mathf.Sin(Time.time * flyPositionSpeed) * flyPosition;
-        transform.position = new Vector3(startPosition.x, startPosition.y + flyMovement, startPosition.z);
+        Vector3 currentPosition = transform.position;
+
+        currentPosition.x = startPosition.x;
+        currentPosition.z = startPosition.z;
+        transform.position = currentPosition;
 
         if (Input.GetKey(KeyCode.D))
         {
