@@ -16,12 +16,12 @@ public class SpaceShipPlayer : MonoBehaviour
 
     private void Update()
     {
+        Shoot();
         MovePlayer();
         if (shotsFired >= 1)
         {
             UpdateUI();
         }
-        Shoot();
     }
 
     private void MovePlayer()
