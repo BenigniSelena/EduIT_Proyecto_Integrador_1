@@ -4,15 +4,30 @@ using UnityEngine;
 
 public class EnemyControl : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private float speed = 10f;
+    [SerializeField] private GameObject destroyEffect;
+
+    private bool isDestroyed = false;
+
+    private void Update()
     {
-        
+        transform.Translate(Vector3.forward * speed * Time.deltaTime);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if (isDestroyed) return;
+
+        if (other.GetComponent<LaserBullets>())
+        {
+            isDestroyed = true;
+
+            if (destroyEffect != null)
+            {
+                Instantiate(destroyEffect, transform.position, transform.rotation);
+            }
+
+            Destroy(gameObject);
+        }
     }
 }

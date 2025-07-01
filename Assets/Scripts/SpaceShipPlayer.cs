@@ -4,10 +4,9 @@ using UnityEngine.UI;
 
 public class SpaceShipPlayer : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 50f;
+    private float moveSpeed = 50f;
     private Vector3 playerMovement;
 
-    [Space]
     [SerializeField] private GameObject laserLeftPrefab;
     [SerializeField] private GameObject laserRightPrefab;
 
