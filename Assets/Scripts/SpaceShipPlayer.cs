@@ -1,23 +1,35 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SpaceShipPlayer : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 50f;
-
     private Vector3 playerMovement;
+
     [Space]
     [SerializeField] private Text myText;
-    [SerializeField] private GameObject laserShots;
-    [SerializeField] private int shotsFired = 0;
-    [SerializeField] private Transform laserSpawn;
+    [SerializeField] private GameObject laserLeftPrefab;
+    [SerializeField] private GameObject laserRightPrefab;
+
+    [SerializeField] private Transform leftSpawn;
+    [SerializeField] private Transform rightSpawn;
+
+    [SerializeField] private Image leftLaserIcon;
+    [SerializeField] private Image rightLaserIcon;
+    [SerializeField] private Text leftLaserCooldownText;
+    [SerializeField] private Text rightLaserCooldownText;
+
+    private bool canShootLeft = true;
+    private bool canShootRight = true;
+
+    private int shotsFired = 0;
 
     private void Update()
     {
-        Shoot();
         MovePlayer();
+        Shoot();
+
         if (shotsFired >= 1)
         {
             UpdateUI();
@@ -62,10 +74,45 @@ public class SpaceShipPlayer : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump"))
         {
-            GameObject laser = Instantiate(laserShots, laserSpawn.position, Quaternion.identity);
-            laser.SetActive(true);
-
-            shotsFired += 1;
+            if (canShootLeft)
+            {
+                FireLaser(laserLeftPrefab, leftSpawn);
+                canShootLeft = false;
+                StartCoroutine(ReloadShot(() => canShootLeft = true, leftLaserIcon, leftLaserCooldownText));
+            }
+            else if (canShootRight)
+            {
+                FireLaser(laserRightPrefab, rightSpawn);
+                canShootRight = false;
+                StartCoroutine(ReloadShot(() => canShootRight = true, rightLaserIcon, rightLaserCooldownText));
+            }
         }
     }
-} 
+
+    private void FireLaser(GameObject laserPrefab, Transform spawnPoint)
+    {
+        GameObject laser = Instantiate(laserPrefab, spawnPoint.position, spawnPoint.rotation);
+        laser.SetActive(true);
+        shotsFired += 1;
+    }
+
+    private IEnumerator ReloadShot(System.Action onReloadComplete, Image laserIcon, Text cooldownText)
+    {
+        Color originalColor = laserIcon.color;
+        Color cooldownColor = new Color32(0x5C, 0x5C, 0x5C, 0xFF);
+
+        laserIcon.color = cooldownColor;
+        cooldownText.gameObject.SetActive(true);
+
+        for (int i = 3; i > 0; i--)
+        {
+            cooldownText.text = i.ToString();
+            yield return new WaitForSeconds(1f);
+        }
+
+        laserIcon.color = originalColor;
+        cooldownText.gameObject.SetActive(false);
+
+        onReloadComplete?.Invoke();
+    }
+}
