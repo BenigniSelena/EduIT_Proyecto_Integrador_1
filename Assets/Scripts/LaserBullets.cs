@@ -17,6 +17,14 @@ public class LaserBullets : MonoBehaviour
         Destroy(gameObject);
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponentInParent<SpaceShipPlayer>() == null && !other.CompareTag("Player"))
+        {
+            Destroy(gameObject);
+        }
+    }
+
     private void OnDisable()
     {
         CancelInvoke("DestroyBullet");
