@@ -8,7 +8,6 @@ public class SpaceShipPlayer : MonoBehaviour
     private Vector3 playerMovement;
 
     [Space]
-    [SerializeField] private Text myText;
     [SerializeField] private GameObject laserLeftPrefab;
     [SerializeField] private GameObject laserRightPrefab;
 
@@ -23,17 +22,10 @@ public class SpaceShipPlayer : MonoBehaviour
     private bool canShootLeft = true;
     private bool canShootRight = true;
 
-    private int shotsFired = 0;
-
     private void Update()
     {
         MovePlayer();
         Shoot();
-
-        if (shotsFired >= 1)
-        {
-            UpdateUI();
-        }
     }
 
     private void MovePlayer()
@@ -65,14 +57,9 @@ public class SpaceShipPlayer : MonoBehaviour
         transform.position = currentPosition;
     }
 
-    private void UpdateUI()
-    {
-        myText.text = "Disparos: " + shotsFired.ToString();
-    }
-
     private void Shoot()
     {
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetKey(KeyCode.Mouse0))
         {
             if (canShootLeft)
             {
@@ -80,7 +67,11 @@ public class SpaceShipPlayer : MonoBehaviour
                 canShootLeft = false;
                 StartCoroutine(ReloadShot(() => canShootLeft = true, leftLaserIcon, leftLaserCooldownText));
             }
-            else if (canShootRight)
+        }
+
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            if (canShootRight)
             {
                 FireLaser(laserRightPrefab, rightSpawn);
                 canShootRight = false;
@@ -93,7 +84,6 @@ public class SpaceShipPlayer : MonoBehaviour
     {
         GameObject laser = Instantiate(laserPrefab, spawnPoint.position, spawnPoint.rotation);
         laser.SetActive(true);
-        shotsFired += 1;
     }
 
     private IEnumerator ReloadShot(System.Action onReloadComplete, Image laserIcon, Text cooldownText)
