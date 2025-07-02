@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyControl : MonoBehaviour
 {
     private float speed = 10f;
+    private float autodestructionTime = 3f;
     [SerializeField] private GameObject destroyEffect;
 
     private bool isDestroyed = false;
@@ -28,6 +29,24 @@ public class EnemyControl : MonoBehaviour
             }
 
             Destroy(gameObject);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            Destroy(gameObject);
+
+            if (destroyEffect != null)
+            {
+                Instantiate(destroyEffect, transform.position, transform.rotation);
+            }
+        }
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Scene Plane"))
+        {
+            Destroy(gameObject, autodestructionTime);
         }
     }
 }

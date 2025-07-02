@@ -1,11 +1,19 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SpaceShipPlayer : MonoBehaviour
 {
-    private float moveSpeed = 50f;
+    private float moveSpeed = 30f;
     private Vector3 playerMovement;
+    private Vector3 initialPosition;
+
+    [SerializeField] private int playerLives = 3;
+    private int currentLives;
+
+    private Rigidbody playerRigidBody;
 
     [SerializeField] private GameObject laserLeftPrefab;
     [SerializeField] private GameObject laserRightPrefab;
@@ -18,8 +26,22 @@ public class SpaceShipPlayer : MonoBehaviour
     [SerializeField] private Text leftLaserCooldownText;
     [SerializeField] private Text rightLaserCooldownText;
 
+    [SerializeField] private Image firstLife;
+    [SerializeField] private Image secondLife;
+    [SerializeField] private Image thirdLife;
+
     private bool canShootLeft = true;
     private bool canShootRight = true;
+
+    private void Start()
+    {
+        initialPosition = new Vector3(0f, 10f, -27.5f);
+        playerRigidBody = GetComponent<Rigidbody>();
+        playerRigidBody.position = initialPosition;
+
+        currentLives = playerLives;
+        transform.position = initialPosition;
+    }
 
     private void Update()
     {
@@ -50,32 +72,27 @@ public class SpaceShipPlayer : MonoBehaviour
         {
             playerMovement.z -= 1;
         }
+    }
 
-        Vector3 currentPosition = transform.position;
-        currentPosition += playerMovement.normalized * moveSpeed * Time.deltaTime;
-        transform.position = currentPosition;
+    private void FixedUpdate()
+    {
+        playerRigidBody.MovePosition(playerRigidBody.position + playerMovement.normalized * moveSpeed * Time.fixedDeltaTime);
     }
 
     private void Shoot()
     {
-        if (Input.GetKey(KeyCode.Mouse0))
+        if (Input.GetKey(KeyCode.Mouse0) && canShootLeft)
         {
-            if (canShootLeft)
-            {
-                FireLaser(laserLeftPrefab, leftSpawn);
-                canShootLeft = false;
-                StartCoroutine(ReloadShot(() => canShootLeft = true, leftLaserIcon, leftLaserCooldownText));
-            }
+            FireLaser(laserLeftPrefab, leftSpawn);
+            canShootLeft = false;
+            StartCoroutine(ReloadShot(() => canShootLeft = true, leftLaserIcon, leftLaserCooldownText));
         }
 
-        if (Input.GetKey(KeyCode.Mouse1))
+        if (Input.GetKey(KeyCode.Mouse1) && canShootRight)
         {
-            if (canShootRight)
-            {
-                FireLaser(laserRightPrefab, rightSpawn);
-                canShootRight = false;
-                StartCoroutine(ReloadShot(() => canShootRight = true, rightLaserIcon, rightLaserCooldownText));
-            }
+            FireLaser(laserRightPrefab, rightSpawn);
+            canShootRight = false;
+            StartCoroutine(ReloadShot(() => canShootRight = true, rightLaserIcon, rightLaserCooldownText));
         }
     }
 
@@ -103,5 +120,43 @@ public class SpaceShipPlayer : MonoBehaviour
         cooldownText.gameObject.SetActive(false);
 
         onReloadComplete?.Invoke();
+    }
+
+    private void LoseLife()
+    {
+        currentLives--;
+
+        if (currentLives == 2)
+        {
+            Destroy(firstLife);
+        }
+
+        if (currentLives == 1)
+        {
+            Destroy(secondLife);
+        }
+
+        if (currentLives <= 0)
+        {
+            Destroy(gameObject);
+            Destroy(thirdLife);
+        }
+        else
+        {
+            transform.position = initialPosition;
+            playerRigidBody.velocity = Vector3.zero;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Scene Plane"))
+        {
+            transform.position = initialPosition;
+        }
+        else
+        {
+            LoseLife();
+        }
     }
 }

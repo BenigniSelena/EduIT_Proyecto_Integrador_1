@@ -9778,7 +9778,7 @@ GameObject:
   - component: {fileID: -3843340085293336868}
   - component: {fileID: -3130347684457516530}
   - component: {fileID: -7702767719364056108}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player - Projectile Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
